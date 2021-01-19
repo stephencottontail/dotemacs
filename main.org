@@ -1,0 +1,108 @@
+#+TITLE: Emacs Init
+#+AUTHOR: Stephen Dickinson <stephencottontail@me.com>
+
+I read about literate programming and it seemed like something interesting
+to try and I also wanted to experiment a bit with Org mode because everyone
+touts it as one of the reasons to use Emacs. So here it is.
+
+The first priority is to use my custom theme so I can actually read the
+text. I use a light-mode theme because it hurts other nerds' feelings.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-theme-load-path (list (concat user-emacs-directory "themes")))
+  (load-theme 'alabaster t)
+#+END_SRC
+
+Lol, I just realized that actually replaces ~custom-theme-load-path~ so now
+none of the built-in Emacs themes are accessible to ~load-theme~.
+
+I'm trying out native compilation too[fn:1]. Anecdotally it seems faster but I don't
+have any benchmarks or anything like that.
+
+The default is "just-in-time" native compilation of new ~.elc~ files, which
+presumably works with things like the ~defer~ feature of ~use-package~. You can
+also tell ~package.el~ (and possibly others) to automatically natively compile
+everything when a package is first installed, but for my use-case there's no
+practical difference between the two so let's go with the option that involves
+less code.
+
+#+BEGIN_SRC emacs-lisp
+  (setq comp-deferred-compilation t)
+#+END_SRC
+
+Speaking of ~use-package~, let's set that up too. It probably won't
+ever come into play, but I do want to automatically install it if
+it's missing.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (eval-when-compile
+    (require 'use-package))
+#+END_SRC
+
+Along with Org mode, Magit is often touted as the other reason to use Emacs.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-c g" . magit-status))
+#+END_SRC
+
+The last things I need to actually start getting work done is ~web-mode~ and ~editorconfig~.
+Everything else can wait until I have some more time to experiment.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :init (progn
+	    (setq web-mode-block-padding 0
+		  web-mode-markup-indent-offset 0
+		  web-mode-css-indent-offset 0
+		  web-mode-code-indent-offset 0)
+	    (add-to-list 'auto-mode-alist '("\\.\\(s\\)*css" . web-mode))
+	    (add-to-list 'auto-mode-alist '("\\.html" . web-mode))
+	    (add-to-list 'auto-mode-alist '("\\.php" . web-mode))))
+
+  (use-package editorconfig
+    :ensure t
+    :init (editorconfig-mode 1))
+#+END_SRC
+
+* Todos
+** TODO LSP mode
+
+LSP supposedly gets a huge performance boost from ~libjansson~, which I wasn't using
+before, but it can be a little bit of a hassle to set up and since I technically don't
+need it right away, it can wait until later.
+
+** TODO JSX syntax
+
+Emacs includes some decent JSX support in recent versions. Unfortunately, the only way
+I know how to activate it is to use ~js-jsx-regexps~, which will automatically
+activate JSX support if any text near the top of a JavaScript buffer matches any of
+the regexps. Fortunately, no work projects are using React/JSX so it's another thing
+I can put off until later.
+
+** TODO Icomplete mode
+
+In keeping with my desire to use as many built-in functions as possible to save on
+processing power, we'll use ~Icomplete~ and ~fido~ mode.
+
+#+BEGIN_SRC emacs-lisp
+  (icomplete-mode t)
+  (fido-mode t)
+  (setq icomplete-separator "\n")
+#+END_SRC
+
+* Footnotes
+
+[fn:1] It took 90 minutes to compile on my Raspberry Pi 4, which is actually a little bit
+better than I thought.
