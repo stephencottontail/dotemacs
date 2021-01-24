@@ -79,29 +79,39 @@ Everything else can wait until I have some more time to experiment.
 * Todos
 ** TODO LSP mode
 
-LSP supposedly gets a huge performance boost from ~libjansson~, which I wasn't using
-before, but it can be a little bit of a hassle to set up and since I technically don't
-need it right away, it can wait until later.
+   LSP supposedly gets a huge performance boost from ~libjansson~, which I wasn't using
+   before, but it can be a little bit of a hassle to set up and since I technically don't
+   need it right away, it can wait until later.
 
 ** TODO JSX syntax
 
-Emacs includes some decent JSX support in recent versions. Unfortunately, the only way
-I know how to activate it is to use ~js-jsx-regexps~, which will automatically
-activate JSX support if any text near the top of a JavaScript buffer matches any of
-the regexps. Fortunately, no work projects are using React/JSX so it's another thing
-I can put off until later.
+   Emacs includes some decent JSX support in recent versions. Unfortunately, the only way
+   I know how to activate it is to use ~js-jsx-regexps~, which will automatically
+   activate JSX support if any text near the top of a JavaScript buffer matches any of
+   the regexps. Fortunately, no work projects are using React/JSX so it's another thing
+   I can put off until later.
 
 ** TODO Icomplete mode
 
-In keeping with my desire to use as many built-in functions as possible to save on
-processing power, we'll use ~Icomplete~ and ~fido~ mode.
+   In keeping with my desire to use as many built-in functions as possible to save on
+   processing power, we'll use ~Icomplete~ and ~fido~ mode.
 
-#+BEGIN_SRC emacs-lisp
-  (icomplete-mode t)
-  (fido-mode t)
-  (setq icomplete-separator "\n")
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (icomplete-mode t)
+     (fido-mode t)
+     (setq icomplete-separator "\n")
+   #+END_SRC
 
+** DONE Backups
+
+   By default, Emacs puts backups in the same folder, which can
+   wreak havoc with Git. Let's fix that.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq backup-directory-alist
+	   (list `("." . ,(concat user-emacs-directory "backup"))))
+   #+END_SRC
+   
 * Footnotes
 
 [fn:1] It took 90 minutes to compile on my Raspberry Pi 4, which is actually a little bit
