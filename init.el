@@ -10,7 +10,6 @@
 
 (use-package envrc
   :hook (after-init . envrc-global-mode))
-(setq sly-enable-slynk-quicklisp nil)
 
 (load-theme (quote modus-vivendi-tinted) t)
 (add-to-list 'default-frame-alist '(font . "UnixWare"))
